@@ -1,0 +1,32 @@
+{
+  "manifestVersion": "0.1",
+  "version": "1.0.0",
+  "id": "emergency-plugin-dashboard",
+  "packageName": "io.wazo.portal.emergency-plugin",
+  "productType": "portal",
+  "name" : {
+    "short": "Emergency Alert: Stay Safe",
+    "full": "Emergency Alert: Stay Safe"
+  },
+  "developer": {
+    "name": "Wazo Inc"
+  },
+  "description": {
+    "short": "Send alerts to all users via chat and call notifications about their safety.",
+    "full": "In the event of an emergency, our system will automatically send out alerts to all registered users via chat and call notifications. This dual communication ensures that everyone receives the alert promptly and effectively, allowing them to make informed decisions about their safety."
+  },
+  "icons": {
+    "color": "https://avatars.githubusercontent.com/u/68688703?s=200&v=4"
+  },
+  "staticTabs": [
+    {
+      "entityId": "emergency-plugin-manage",
+      "context": [
+        "pbxMenu"
+      ],
+      "name": "Emergency Alert",
+      "parent": "common.layout.pbxMenu.services",
+      "contentUrl": "/"
+    }
+  ]
+}
