@@ -1,0 +1,9 @@
+name: emergency-check
+namespace: hackaton24
+version: 0.0.1
+author: The Wazo Team
+display_name: Emergency Check
+min_wazo_version: 24.01
+tags:
+  - experimental
+homepage: https://github.com/tinxhq/emergency-check-plugin
