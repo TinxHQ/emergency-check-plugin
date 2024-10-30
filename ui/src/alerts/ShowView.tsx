@@ -56,9 +56,7 @@ const getIcon = (severity: Props['severity']) => {
 
 const UsersList = ({ title, severity, users }: Props) => {
   const color = getColor(severity);
-  console.log(`🤠 -> UsersList -> color:`, color);
   const Icon = getIcon(severity);
-  console.log(`🤠 -> UsersList -> Icon:`, Icon);
 
   return (
     <>
