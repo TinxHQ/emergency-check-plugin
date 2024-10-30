@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2023 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2024 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import yaml
@@ -12,7 +12,7 @@ with open('wazo/plugin.yml') as file:
 
 calld_entrypoints = {
     'wazo_calld.plugins': [
-        'emergency_check = emergency_check.plugins.calld:EmergencyCheckPlugin',
+        'emergency_check = emergency_check.calld.plugin:EmergencyCheckPlugin',
     ]
 }
 
@@ -26,7 +26,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        'emergency_check.plugins.calld': ['api.yml'],
+        # 'emergency_check.calld': ['api.yml'],
     },
     entry_points=dict(
         **calld_entrypoints,
