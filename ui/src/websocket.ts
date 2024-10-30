@@ -13,7 +13,7 @@ export const initWazoSocket = ({ host, token }: { host: string, token: string })
   ws = new WebSocketClient({
     host,
     token,
-    events: [''], // List of events you want to receive (use `['*']` as wildcard).
+    events: ['*'], // List of events you want to receive (use `['*']` as wildcard).
     version: 2, // Use version 2 of the Wazo WebSocket protocol to be informed when the token will expire.
   }, {
     // debug: true,
@@ -22,8 +22,9 @@ export const initWazoSocket = ({ host, token }: { host: string, token: string })
 
   ws.connect();
 
-  ws.on('foo', ({ enabled }) => {
-    console.log(enabled);
+  ws.on('*', (args) => {
+    // @todo
+    store.dispatch();
   });
   return ws;
 }

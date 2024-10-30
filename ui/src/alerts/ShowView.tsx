@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { Alert, AlertUser } from '../types/index'
 import { ALERTS } from '../mock';
@@ -9,6 +9,8 @@ import styled from '@emotion/styled'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import CheckIcon from '@mui/icons-material/Check';
+import { useDispatch } from 'react-redux';
+import { initAlert } from '../store/alertSlice';
 
 const CardColored = styled(Card)(`
   font-size: 30px;
@@ -83,7 +85,6 @@ const UsersList = ({ title, severity, users }: Props) => {
           )
         })}
       </List>
-
     </>
   )
 }
@@ -91,6 +92,12 @@ const UsersList = ({ title, severity, users }: Props) => {
 const ShowView = () => {
   const routeParams = useParams();
   const [alert, setAlert] = useState<Alert>(ALERTS[0]);
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    console.log('allooo');
+    dispatch(initAlert(ALERTS[0]))
+  }, [])
 
   return (
     <div>
@@ -112,4 +119,4 @@ const ShowView = () => {
   )
 }
 
-export default ShowView;
+export default memo(ShowView);
