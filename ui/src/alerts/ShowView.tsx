@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type { Alert, AlertUser } from '../types/index'
+import type { AlertUser, EnhanceAlert } from '../types/index'
 import { ALERTS } from '../mock';
 import Grid from '@mui/material/Grid2';
 import { Avatar, Card, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
@@ -9,8 +9,9 @@ import styled from '@emotion/styled'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import CheckIcon from '@mui/icons-material/Check';
-import { useDispatch } from 'react-redux';
-import { initAlert } from '../store/alertSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { alertNotSafe, alertSafe, alertWaiting, initAlert } from '../store/alertSlice';
+import { enhanceAlert } from './services';
 
 const CardColored = styled(Card)(`
   font-size: 30px;
@@ -57,6 +58,7 @@ const getIcon = (severity: Props['severity']) => {
 }
 
 const UsersList = ({ title, severity, users }: Props) => {
+  console.log(`🤠 -> UsersList -> users:`, users);
   const color = getColor(severity);
   const Icon = getIcon(severity);
 
@@ -64,12 +66,12 @@ const UsersList = ({ title, severity, users }: Props) => {
     <>
       <CardColored sx={{ background: color }}>
         <ListTitle>{ title }</ListTitle>
-        { users.length }
+        { users?.length || 0 }
       </CardColored>
 
 
       <List>
-        { users.map(({ uuid, firstname, lastname }: AlertUser) => {
+        { users?.map(({ uuid, firstname, lastname }: AlertUser) => {
           return (
             <div key={uuid}>
               <ListItem>
@@ -91,28 +93,30 @@ const UsersList = ({ title, severity, users }: Props) => {
 
 const ShowView = () => {
   const routeParams = useParams();
-  const [alert, setAlert] = useState<Alert>(ALERTS[0]);
+  const alert: EnhanceAlert = useSelector((state: any) => state.alert)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log('allooo');
-    dispatch(initAlert(ALERTS[0]))
+    dispatch(initAlert(enhanceAlert(ALERTS[0])))
   }, [])
 
   return (
     <div>
+      <Button onClick={() => dispatch(alertWaiting(alert.pending_users[0]))}>Move waiting</Button>
+      <Button onClick={() => dispatch(alertNotSafe(alert.pending_users[0]))}>Move not safe</Button>
+      <Button onClick={() => dispatch(alertSafe(alert.pending_users[0]))}>Move safe</Button>
 
       <Grid container spacing={2}>
         <Grid size={4}>
-          <UsersList severity={WAITING} title="In progress" users={alert.missing} />
+          <UsersList severity={WAITING} title="In progress" users={alert.pending_users} />
         </Grid>
 
         <Grid size={4}>
-          <UsersList severity={NOT_SAFE} title="Not Safe" users={alert.not_safe} />
+          <UsersList severity={NOT_SAFE} title="Not Safe" users={alert.not_safe_users} />
         </Grid>
 
         <Grid size={4}>
-          <UsersList severity={SAFE} title="Not Safe" users={alert.safe} />
+          <UsersList severity={SAFE} title="Not Safe" users={alert.safe_users} />
         </Grid>
       </Grid>
     </div>

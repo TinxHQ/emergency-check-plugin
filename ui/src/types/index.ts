@@ -1,14 +1,17 @@
-export type AlertUser = {
-  uuid: string;
-  firstname: string  | null;
-  lastname: string | null;
-}
+export type AlertUser = { [userId: string]: string }
 
 export type Alert = {
+  status: string;
+  timestamp: number;
+  originator: string;
+  targeted_users: AlertUser;
+  emergency_type: string;
   uuid: string;
-  date: string;
-  total: number;
-  missing: AlertUser[];
-  safe: AlertUser[];
-  not_safe: AlertUser[];
+  tenant_uuid: string;
+}
+
+export type EnhanceAlert = Alert & {
+  pending_users: AlertUser[];
+  safe_users: AlertUser[];
+  not_safe_users: AlertUser[];
 }

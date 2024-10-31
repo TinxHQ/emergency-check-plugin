@@ -7,37 +7,45 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useNavigate, Link } from 'react-router-dom';
-import type { Alert } from '../types/index'
+import type { Alert, EnhanceAlert } from '../types/index'
 import { ALERTS } from '../mock';
 import { IconButton } from '@mui/material';
+import { enhanceAlert } from './services';
+
+
+const ENHANCE_ALERTS = ALERTS.map(enhanceAlert);
 
 
 const ListView = () => {
-  const [rows, setRows] = useState<Alert[]>(ALERTS);
+  const [rows, setRows] = useState<EnhanceAlert[]>(ENHANCE_ALERTS);
   const navigate = useNavigate();
 
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>Date</TableCell>
-          <TableCell>Missing</TableCell>
-          <TableCell>Safe</TableCell>
-          <TableCell>Not Safe</TableCell>
+          <TableCell>Status</TableCell>
+          <TableCell>Type</TableCell>
+          <TableCell>Originator</TableCell>
+          <TableCell>⌛ Pending</TableCell>
+          <TableCell>🔴 Not Safe</TableCell>
+          <TableCell>🟢 Safe</TableCell>
           <TableCell />
         </TableRow>
       </TableHead>
       <TableBody>
         {rows?.map((row) => (
           <TableRow
-            key={row.date}
+            key={row.uuid}
             sx={{ cursor: 'pointer', '&:last-child td, &:last-child th': { border: 0 } }}
             onClick={() => navigate(`/alerts/${row.uuid}`)}
           >
-            <TableCell>{row.date}</TableCell>
-            <TableCell>{row.missing.length}</TableCell>
-            <TableCell>{row.safe.length}</TableCell>
-            <TableCell>{row.not_safe.length}</TableCell>
+            <TableCell>{row.status}</TableCell>
+            <TableCell>{ row.emergency_type === 'fire' && '🔥 '}{ row.emergency_type }</TableCell>
+            <TableCell>{row.originator}</TableCell>
+            <TableCell>{row?.pending_users?.length || 0}</TableCell>
+            <TableCell>{row?.not_safe_users?.length || 0}</TableCell>
+            <TableCell>{row?.safe_users?.length || 0}</TableCell>
             <TableCell><IconButton LinkComponent={Link} to={`/alerts/${row.uuid}`}><EditIcon /></IconButton></TableCell>
           </TableRow>
         ))}
