@@ -55,6 +55,7 @@ class EmergencyCheckPlugin:
         token_changed_subscribe(amid_client.set_token)
 
         auth_client = AuthClient(**config['auth'])
+        
         def set_token(token):
             logger.info('setting new auth_client token %s', token)
             auth_client.set_token(token)
@@ -71,18 +72,19 @@ class EmergencyCheckPlugin:
             for tenant in auth_client.tenants.list()['items']:
                 username = f'emergency-check+{tenant["slug"]}@wazo.io'
                 if (users := confd_client.users.list(tenant_uuid=tenant['uuid'], username=username)['items']):
-                    for user in users:
-                        confd_client.session().delete(
-                            f'/users/{user["uuid"]}',
-                            params={'recursive': True},
-                            headers={
-                                **confd_client.READ_HEADERS,
-                                'X-Auth-Token': confd_client._token_id,
-                                'Wazo-Tenant': tenant['uuid']
-                            }
-                        )
-                        auth_client.users.delete(user['uuid'])
-                if tenant['slug'] != 'master':
+                    # for user in users:
+                    #     confd_client.session().delete(
+                    #         f'/users/{user["uuid"]}',
+                    #         params={'recursive': True},
+                    #         headers={
+                    #             **confd_client.READ_HEADERS,
+                    #             'X-Auth-Token': confd_client._token_id,
+                    #             'Wazo-Tenant': tenant['uuid']
+                    #         }
+                    #     )
+                    #     auth_client.users.delete(user['uuid'])
+                    SYSTEM_USERS[tenant['uuid']] = users[0]
+                elif tenant['slug'] != 'master':
                     logger.info('Creating emergency-check user in tenant %s', tenant['uuid'])
                     try:
                         user = confd_client.users.create(
