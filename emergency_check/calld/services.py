@@ -138,7 +138,7 @@ class EmergencyCheckService:
             return True
 
     def _get_system_user_token(self, tenant_uuid: str):
-        logger.debug('auth_client token: %s', self._auth_client.token)
+        logger.debug('auth_client token: %s', self._auth_client._token_id)
         tenant = self._auth_client.tenants.get(tenant_uuid)
         username = f'emergency-check+{tenant["slug"]}@wazo.io'
         token = self._auth_client.token.new(
