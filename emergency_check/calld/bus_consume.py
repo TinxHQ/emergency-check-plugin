@@ -33,7 +33,7 @@ class EventHandler:
         try:
             emergency_check: EmergencyCheckState = next(
                 emergency_check
-                for emergency_check in self._service.emergencies.values()
+                for emergency_check in self._service._emergencies.values()
                 if emergency_check.tenant_uuid == event['tenant_uuid']
                 and emergency_check.chat_room == event['room']['uuid']
             )
