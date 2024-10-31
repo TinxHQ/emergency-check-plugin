@@ -96,7 +96,7 @@ class EmergencyCheckService:
     def _get_tenant_users(self, tenant_uuid) -> list[str]:
         users = self._confd_client.users.list(tenant_uuid=tenant_uuid)['items']
         logger.debug('%d users in tenant %s', len(users), tenant_uuid)
-        return [user['uuid'] for user in users if not user['auth']['username'].startswith('emergency-check+')]
+        return [user['uuid'] for user in users if not user['firstname'].startswith('emergency-check')]
 
     def get_emergency_check_state(self, emergency_id, tenant_uuid):
         emergency = self._emergencies[emergency_id]
