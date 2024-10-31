@@ -155,7 +155,7 @@ class EmergencyCheckService:
         self._chatd_client.rooms.create_from_user({
             'name': f'EMERGENCY CHECK - {emergency_check.emergency_type}',
             'users': [
-                user_uuid
+                {"uuid": user_uuid}
             ]
         })
         self._chatd_client.rooms.create_message_from_user({
