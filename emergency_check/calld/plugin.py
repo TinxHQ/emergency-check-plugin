@@ -4,23 +4,21 @@
 from __future__ import annotations
 
 import logging
+import os
+import signal
+from concurrent.futures import ThreadPoolExecutor
 
+import requests.exceptions
 from wazo_amid_client.client import AmidClient
 from wazo_auth_client.client import AuthClient
-from wazo_confd_client.client import ConfdClient
-from wazo_chatd_client.client import ChatdClient
-
 from wazo_calld.types import PluginDependencies
-import signal
-import os
-import requests.exceptions
+from wazo_chatd_client.client import ChatdClient
+from wazo_confd_client.client import ConfdClient
 
 from .bus_consume import EventHandler
+from .http import EmergencyCheck, EmergencyCheckItem
 from .notifier import EmergencyCheckNotifier
 from .services import EmergencyCheckService, EmergencyCheckState
-from .http import EmergencyCheck, EmergencyCheckItem
-
-from concurrent.futures import ThreadPoolExecutor
 
 logger = logging.getLogger(__name__)
 
@@ -122,14 +120,13 @@ class EmergencyCheckPlugin:
                     for tenant in tenants
                     if tenant["slug"] != "master"
                 ), SYSTEM_USERS
-w
+
             logger.info("Done creating emergency-check users in each tenant")
 
         next_token_changed_subscribe(create_tenant_users)
 
         chatd_client = ChatdClient(**config["chatd"])
         # token_changed_subscribe(chatd_client.set_token)
-
         notifier = EmergencyCheckNotifier(bus_publisher)
         service = EmergencyCheckService(
             self.threadpool,

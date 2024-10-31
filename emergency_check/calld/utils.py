@@ -1,14 +1,15 @@
 # Copyright 2024 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field, InitVar
-from typing import Literal
 from concurrent.futures import Future
+from dataclasses import InitVar, dataclass, field
+from typing import Literal
 
-UserState = Literal['pending', 'reached', 'safe', 'unsafe']
-EmergencyType = Literal['fire', 'earthquake', 'violence', 'storm']
-EmergencyCheckStatus = Literal['started', 'concluded', 'aborted']
+UserState = Literal["pending", "reached", "safe", "unsafe"]
+EmergencyType = Literal["fire", "earthquake", "violence", "storm"]
+EmergencyCheckStatus = Literal["started", "concluded", "aborted"]
 
 
 @dataclass
