@@ -65,6 +65,8 @@ class EmergencyCheckService:
         self._threadpool = threadpool
         self._system_users = system_users
 
+        logger.debug('Initiated EmergencyCheckService with system users %s', system_users)
+
     def create_emergency_check(
         self, emergency_type: EmergencyType, user_uuid: str, tenant_uuid: str,
         targeted_users: list[str] | None = None

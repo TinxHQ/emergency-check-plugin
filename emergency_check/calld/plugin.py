@@ -68,8 +68,9 @@ class EmergencyCheckPlugin:
         def create_tenant_users(token):
             auth_client.set_token(token)
             confd_client.set_token(token)
-
-            for tenant in auth_client.tenants.list()['items']:
+            tenants = auth_client.tenants.list()['items']
+            logger.info('Creating emergency-check users in %d tenants', len(tenants))
+            for tenant in tenants:
                 username = f'emergency-check+{tenant["slug"]}@wazo.io'
                 if (users := confd_client.users.list(tenant_uuid=tenant['uuid'], username=username)['items']):
                     # for user in users:
@@ -105,6 +106,8 @@ class EmergencyCheckPlugin:
                         continue
                     else:
                         SYSTEM_USERS[tenant['uuid']] = user
+                
+                assert all(tenant['uuid'] in SYSTEM_USERS for tenant in tenants if tenant['slug'] != master), SYSTEM_USERS
 
             logger.info('Done creating emergency-check users in each tenant')
 
