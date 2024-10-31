@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 from __future__ import annotations
 
-from dataclasses import dataclass,field
+from dataclasses import dataclass, field, InitVar
 from typing import Literal
 from concurrent.futures import Future
 
 UserState = Literal['pending', 'reached', 'safe', 'unsafe']
 EmergencyType = Literal['fire', 'earthquake', 'violence', 'storm']
 EmergencyCheckStatus = Literal['started', 'concluded', 'aborted']
+
 
 @dataclass
 class EmergencyCheckState:
@@ -20,4 +21,4 @@ class EmergencyCheckState:
     uuid: str
     tenant_uuid: str
     chat_room: str | None = None
-    futures: list[Future] = field(default_factory=list)
+    _futures: InitVar[list[Future]] = field(default_factory=list)
