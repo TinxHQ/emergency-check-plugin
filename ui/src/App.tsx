@@ -1,10 +1,9 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { App as AppPlugin } from '@wazo/euc-plugins-sdk';
 import routes from './routes'
-import { closeWazoSocket, initWazoSocket } from './websocket';
+import { closeWazoSocket, initWazoRequester, initWazoSocket } from './wazo';
 import { Provider } from 'react-redux';
 import store from './store';
-import { useEffect } from 'react';
 
 const router = createBrowserRouter(routes);
 const wazoApp = new AppPlugin();
@@ -17,10 +16,13 @@ wazoApp.onPluginUnLoaded = () => {
   await wazoApp.initialize();
   const context = wazoApp.getContext();
 
-  initWazoSocket({
+  const authInfo = {
     host: context.app.extra.stack.host,
     token: context.app.extra.stack.session.token
-  })
+  };
+
+  initWazoSocket(authInfo)
+  initWazoRequester(authInfo);
 })();
 
 

@@ -1,7 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { AlertUser, EnhanceAlert } from '../types/index'
-import { ALERTS } from '../mock';
 import Grid from '@mui/material/Grid2';
 import { Avatar, Card, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import { green, grey, red } from '@mui/material/colors';
@@ -11,7 +10,7 @@ import DangerousIcon from '@mui/icons-material/Dangerous';
 import CheckIcon from '@mui/icons-material/Check';
 import { useDispatch, useSelector } from 'react-redux';
 import { alertNotSafe, alertSafe, alertWaiting, initAlert } from '../store/alertSlice';
-import { enhanceAlert } from './services';
+import * as Emergency  from '../models/Emergency';
 
 const CardColored = styled(Card)(`
   font-size: 30px;
@@ -58,7 +57,6 @@ const getIcon = (severity: Props['severity']) => {
 }
 
 const UsersList = ({ title, severity, users }: Props) => {
-  console.log(`🤠 -> UsersList -> users:`, users);
   const color = getColor(severity);
   const Icon = getIcon(severity);
 
@@ -97,7 +95,10 @@ const ShowView = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(initAlert(enhanceAlert(ALERTS[0])))
+    (async ( ) => {
+      const response = await Emergency.get(routeParams.uuid);
+      dispatch(initAlert(response))
+    })()
   }, [])
 
   return (

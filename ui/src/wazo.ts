@@ -1,11 +1,16 @@
 import {
+  ApiRequester,
   WebSocketClient,
   type WebSocketClient as WazoWebSocketClient,
 } from '@wazo/sdk';
 
 let ws: WazoWebSocketClient;
+let requester: typeof ApiRequester;
+const CLIENT_ID = 'emergency-check-plugin';
 
-export const initWazoSocket = ({ host, token }: { host: string, token: string }) => {
+type InitOpts = { host: string, token: string };
+
+export const initWazoSocket = ({ host, token }: InitOpts) => {
   if(ws) {
     return ws;
   }
@@ -34,3 +39,19 @@ export const getWazoSocket = () => ws;
 export const closeWazoSocket = () => {
   ws.close();
 }
+
+export const initWazoRequester = ({ host, token }: InitOpts) => {
+  if(requester) {
+    return requester;
+  }
+
+  requester = new ApiRequester({
+    server: host,
+    clientId: CLIENT_ID,
+  });
+  requester.setToken(token);
+
+  return requester;
+}
+
+export const getWazoRequester = () => requester;

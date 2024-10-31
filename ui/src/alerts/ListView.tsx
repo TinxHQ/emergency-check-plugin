@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import EditIcon from '@mui/icons-material/Edit';
 import Table from '@mui/material/Table';
@@ -7,18 +7,21 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useNavigate, Link } from 'react-router-dom';
-import type { Alert, EnhanceAlert } from '../types/index'
-import { ALERTS } from '../mock';
-import { IconButton } from '@mui/material';
-import { enhanceAlert } from './services';
-
-
-const ENHANCE_ALERTS = ALERTS.map(enhanceAlert);
-
+import type { EnhanceAlert } from '../types/index'
+import { CircularProgress, IconButton } from '@mui/material';
+import * as Emergency  from '../models/Emergency';
 
 const ListView = () => {
-  const [rows, setRows] = useState<EnhanceAlert[]>(ENHANCE_ALERTS);
+  const [rows, setRows] = useState<EnhanceAlert[] | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    Emergency.all().then(setRows);
+  }, [])
+
+  if(!rows) {
+    return <CircularProgress size={120} />
+  }
 
   return (
     <Table>

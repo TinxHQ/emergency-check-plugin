@@ -3,6 +3,10 @@ import { AlertUser, EnhanceAlert } from '../types';
 
 const initialState: any = { }
 
+const filterCurrentUser = (users, currentUserUUID) => {
+  return users.filter(user => user.uuid !== currentUserUUID)
+}
+
 export const alertSlice = createSlice({
   name: 'alert',
   initialState,
