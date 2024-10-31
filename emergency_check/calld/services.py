@@ -144,7 +144,6 @@ class EmergencyCheckService:
         token = self._auth_client.token.new(
             username=username,
             password='superpass',
-            tenant_id=tenant_uuid
         )
         return token
 
