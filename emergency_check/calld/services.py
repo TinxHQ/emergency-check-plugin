@@ -152,13 +152,13 @@ class EmergencyCheckService:
 
         self._chatd_client.set_token(token['token'])
 
-        self._chatd_client.rooms.create_from_user({
+        room = self._chatd_client.rooms.create_from_user({
             'name': f'EMERGENCY CHECK - {emergency_check.emergency_type}',
             'users': [
                 {"uuid": user_uuid}
             ]
         })
-        self._chatd_client.rooms.create_message_from_user({
+        self._chatd_client.rooms.create_message_from_user(room['uuid'], {
             'content': EMERGENCY_MESSAGE_TEMPLATES[emergency_check.emergency_type].format(
 
             ),
