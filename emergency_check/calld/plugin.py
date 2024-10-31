@@ -74,8 +74,7 @@ class EmergencyCheckPlugin:
             for tenant in tenants:
                 username = f'emergency-check+{tenant["slug"]}@wazo.io'
                 if users := confd_client.users.list(
-                    tenant_uuid=tenant["uuid"], 
-                    firstname='emergency-check'
+                    tenant_uuid=tenant["uuid"], firstname="emergency-check"
                 )["items"]:
                     # for user in users:
                     #     confd_client.session().delete(
@@ -117,11 +116,11 @@ class EmergencyCheckPlugin:
                     else:
                         SYSTEM_USERS[tenant["uuid"]] = user
 
-                assert all(
-                    tenant["uuid"] in SYSTEM_USERS
-                    for tenant in tenants
-                    if tenant["slug"] != "master"
-                ), SYSTEM_USERS
+            assert all(
+                tenant["uuid"] in SYSTEM_USERS
+                for tenant in tenants
+                if tenant["slug"] != "master"
+            ), SYSTEM_USERS
 
             logger.info("Done creating emergency-check users in each tenant")
 
