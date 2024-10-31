@@ -8,7 +8,11 @@ let ws: WazoWebSocketClient;
 let requester: typeof ApiRequester;
 const CLIENT_ID = 'emergency-check-plugin';
 
-type InitOpts = { host: string, token: string };
+type InitOpts = {
+  host: string;
+  token: string;
+  tenant: string;
+};
 
 export const initWazoSocket = ({ host, token }: InitOpts) => {
   if(ws) {
@@ -40,7 +44,7 @@ export const closeWazoSocket = () => {
   ws.close();
 }
 
-export const initWazoRequester = ({ host, token }: InitOpts) => {
+export const initWazoRequester = ({ host, token, tenant }: InitOpts) => {
   if(requester) {
     return requester;
   }
@@ -50,6 +54,7 @@ export const initWazoRequester = ({ host, token }: InitOpts) => {
     clientId: CLIENT_ID,
   });
   requester.setToken(token);
+  requester.setTenant(tenant)
 
   return requester;
 }

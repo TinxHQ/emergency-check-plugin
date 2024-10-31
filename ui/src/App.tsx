@@ -18,7 +18,8 @@ wazoApp.onPluginUnLoaded = () => {
 
   const authInfo = {
     host: context.app.extra.stack.host,
-    token: context.app.extra.stack.session.token
+    token: context.app.extra.stack.session.token,
+    tenant: context.app.extra.stack.currentTenant
   };
 
   initWazoSocket(authInfo)

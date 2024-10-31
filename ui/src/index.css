@@ -8,3 +8,68 @@
 body {
   padding: 10px
 }
+
+img.random {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  animation: move 4s infinite;
+  opacity: .75;
+}
+
+/* animation-range-start: 20%; */
+/* animation-direction: reverse; */
+
+img.random:nth-child(1) { animation: move 5s infinite; }
+img.random:nth-child(2) { animation: move2 6s infinite; top: 50%; left: 50%;  }
+img.random:nth-child(3) { animation: move3 7s infinite; top: 75%; left: 25%; }
+img.random:nth-child(4) { animation: move 7s infinite; animation-direction: reverse; animation-range-start: 33%; }
+img.random:nth-child(5) { animation: move2 6s infinite; top: 50%; left: 50%; animation-direction: reverse; animation-range-start: 66%; }
+img.random:nth-child(6) { animation: move3 5s infinite; top: 75%; left: 25%; animation-direction: reverse; animation-range-start: 99%; }
+
+@keyframes move {
+  0% { top: 0; left: 0; }
+  20% { top: 80%; left: 77%; }
+  40% { top: 33%; left: 55%; }
+  60% { top: 24%; left: 47%; }
+  80% { top: 0; left: 50%; }
+  100% { top: 0; left: 0; }
+}
+
+@keyframes move2 {
+  0% { top: 50%; left: 50%; }
+  20% { top: 80%; left: 77%; }
+  40% { top: 60%; left: 10%; }
+  60% { top: 24%; left: 47%; }
+  80% { top: 0; left: 50%; }
+  100% { top: 50%; left: 50%; }
+}
+
+@keyframes move3 {
+  0% { top: 75%; left: 25%; }
+  20% { top: 30%; left: 70%; }
+  40% { top: 80%; left: 10%; }
+  60% { top: 25%; left: 25%; }
+  80% { top: 10%; left: 40%; }
+  100% { top: 75%; left: 25%; }
+}
+
+
+.fire {
+  display: inline-block;
+  animation: reflect 1s infinite;
+}
+
+@keyframes reflect {
+  0% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-1);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+

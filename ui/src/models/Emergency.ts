@@ -1,8 +1,8 @@
 import { getWazoRequester } from "../wazo"
 
 // @todo use right path
-// const BASE_PATH: string = 'calld/1.0/emergency';
-const BASE_PATH: string = 'auth/0.1/users';
+const BASE_PATH: string = 'calld/1.0/emergency';
+// const BASE_PATH: string = 'auth/0.1/users';
 
 export const all = async () => {
   const requester = getWazoRequester();
@@ -18,4 +18,12 @@ export const get = async (uuid: string) => {
 
   // @todo enhance response
   return await requester.call(`${BASE_PATH}/${uuid}`);
+}
+
+export const create = async (emergency_type = 'fire') => {
+    const requester = getWazoRequester();
+
+  return await requester.call(BASE_PATH, 'POST', {
+    emergency_type
+  });
 }
