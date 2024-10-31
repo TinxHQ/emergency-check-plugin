@@ -113,20 +113,20 @@ class EmergencyCheckService:
 
         # generate originates in batches of 20, 
         # with 1 second pause between batches to avoid overloading asterisk
-        pending_users = [
-            user_uuid for user_uuid, user_state in emergency_check.targeted_users.items() 
-            if user_state == 'pending'
-        ]
-        while len(pending_users) > 0:
-            for batch in batched(pending_users, 20):
-                for user_uuid in batch:
-                    if emergency_check.targeted_users[user_uuid] == 'pending':
-                        logger.debug('Calling user %s', user_uuid)
-                        self._call_user_lines(user_uuid, emergency_check)
-                time.sleep(1)
+        # pending_users = [
+        #     user_uuid for user_uuid, user_state in emergency_check.targeted_users.items() 
+        #     if user_state == 'pending'
+        # ]
+        # while len(pending_users) > 0:
+        #     for batch in batched(pending_users, 20):
+        #         for user_uuid in batch:
+        #             if emergency_check.targeted_users[user_uuid] == 'pending':
+        #                 logger.debug('Calling user %s', user_uuid)
+        #                 self._call_user_lines(user_uuid, emergency_check)
+        #         time.sleep(1)
 
-        logger.info('Emergency check concluded for %d users', len(emergency_check.targeted_users))
-        emergency_check.status = 'concluded'
+        # logger.info('Emergency check concluded for %d users', len(emergency_check.targeted_users))
+        # emergency_check.status = 'concluded'
 
     def _call_user_lines(self, user_uuid: str, emergency_check: EmergencyCheckState):
         try:
