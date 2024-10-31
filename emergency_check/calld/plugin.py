@@ -74,7 +74,8 @@ class EmergencyCheckPlugin:
             for tenant in tenants:
                 username = f'emergency-check+{tenant["slug"]}@wazo.io'
                 if users := confd_client.users.list(
-                    tenant_uuid=tenant["uuid"], username=username
+                    tenant_uuid=tenant["uuid"], 
+                    firstname='emergency-check'
                 )["items"]:
                     # for user in users:
                     #     confd_client.session().delete(
@@ -97,6 +98,7 @@ class EmergencyCheckPlugin:
                             {
                                 "firstname": "emergency-check",
                                 "lastname": "",
+                                "email": username,
                                 "auth": {
                                     "username": username,
                                     "password": "superpass",
