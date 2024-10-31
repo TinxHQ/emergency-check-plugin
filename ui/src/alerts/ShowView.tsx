@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { AlertUser, EnhanceAlert } from '../types/index'
 import Grid from '@mui/material/Grid2';
-import { Avatar, Card, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { Avatar, Button, Card, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import { green, grey, red } from '@mui/material/colors';
 import styled from '@emotion/styled'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
