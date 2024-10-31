@@ -150,7 +150,7 @@ class EmergencyCheckService:
     def _send_chatd_message(self, user_uuid: str, emergency_check: EmergencyCheckState):
         token = self._get_system_user_token(emergency_check.tenant_uuid)
 
-        self._chatd_client.set_token(token)
+        self._chatd_client.set_token(token.uuid)
 
         self._chatd_client.rooms.create_from_user({
             'name': f'EMERGENCY CHECK - {emergency_check.emergency_type}',
