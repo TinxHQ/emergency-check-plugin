@@ -88,7 +88,7 @@ class EmergencyCheckService:
         )
         _future = self._threadpool.submit(self._trigger_emergency_check, emergency_state)
         _future.add_done_callback(_future_handler)
-        self._emergencies[emergency_id].futures.append(
+        self._emergencies[emergency_id]._futures.append(
             _future
         )
         return emergency_id
