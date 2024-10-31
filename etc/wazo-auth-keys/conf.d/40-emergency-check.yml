@@ -1,0 +1,3 @@
+wazo-calld:
+  acl:
+    - 'auth.tenants.*.read'
