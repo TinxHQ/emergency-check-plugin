@@ -25,17 +25,20 @@ class EventHandler:
         )
 
     def on_chat_message(self, event):
-        if "EMERGENCY CHECK" not in event['room']['name']:
-            return
+        # NOTE: documentation lies, there is no room.name in event        
+        # if "EMERGENCY CHECK" not in event['room']['name']:
+        #     return
 
         logger.info('message in emergency check chat room')
-
-        emergency_check: EmergencyCheckState = next(
-            emergency_check
-            for emergency_check in self._service.emergencies.values()
-            if emergency_check.tenant_uuid == event['tenant_uuid']
-            and emergency_check.chat_room == event['room']['uuid']
-        )
+        try:
+            emergency_check: EmergencyCheckState = next(
+                emergency_check
+                for emergency_check in self._service.emergencies.values()
+                if emergency_check.tenant_uuid == event['tenant_uuid']
+                and emergency_check.chat_room == event['room']['uuid']
+            )
+        except StopIteration:
+            return
 
         if emergency_check.status == 'concluded':
             return
