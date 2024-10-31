@@ -91,7 +91,7 @@ class EmergencyCheckPlugin:
                                 'auth': {
                                     'username': username,
                                     'password': 'superpass',
-                                    'purpose': 'internal',
+                                    'purpose': 'user',
                                     'enabled': True
                                 }
                             },
