@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass,field
 from typing import Literal
+from concurrent.futures import Future
 
 UserState = Literal['pending', 'reached', 'safe', 'unsafe']
 EmergencyType = Literal['fire', 'earthquake', 'violence', 'storm']
@@ -19,4 +20,4 @@ class EmergencyCheckState:
     uuid: str
     tenant_uuid: str
     chat_room: str | None = None
-    futures = field(default_factory=list)
+    futures: list[Future] = field(default_factory=list)
