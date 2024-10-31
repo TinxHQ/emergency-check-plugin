@@ -21,4 +21,7 @@ class EmergencyCheckState:
     uuid: str
     tenant_uuid: str
     chat_room: str | None = None
-    _futures: InitVar[list[Future]] = field(default_factory=list)
+    _futures: InitVar[list[Future] | None] = None
+
+    def __post_init__(self, *args):
+        self._futures = []
