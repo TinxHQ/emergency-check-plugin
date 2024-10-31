@@ -4,104 +4,54 @@
 import logging
 
 from .services import EmergencyCheckService
+from .utils import EmergencyCheckState
+
+from wazo_calld.bus import CoreBusConsumer
+import re
 
 logger = logging.getLogger(__name__)
+
+SAFE_CHAT_RESPONSE = re.compile(r'\b(safe|yes)\b')
+UNSAFE_CHAT_RESPONSE = re.compile(r'\b(unsafe|no)\b')
 
 
 class EventHandler:
     def __init__(self, service):
         self._service: EmergencyCheckService = service
 
-    def subscribe(self, bus_consumer):
-        pass
-        # bus_consumer.subscribe('BridgeEnter', self._on_bridge_enter)
-        # bus_consumer.subscribe('DialEnd', self._on_dial_end)
-        # bus_consumer.subscribe('UserEvent', self._on_user_event)
-        # bus_consumer.subscribe(
-        #     'auth_refresh_token_created', self._on_refresh_token_created
-        # )
-        # bus_consumer.subscribe(
-        #     'auth_refresh_token_deleted', self._on_refresh_token_deleted
-        # )
+    def subscribe(self, bus_consumer: CoreBusConsumer):
+        bus_consumer.subscribe(
+            'chatd_user_room_message_created', self.on_chat_message
+        )
 
-    # def _on_user_event(self, event):
-    #     if event['UserEvent'] != 'Pushmobile':
-    #         return
+    def on_chat_message(self, event):
+        if "EMERGENCY CHECK" not in event['room']['name']:
+            return
 
-    #     user_uuid = event['WAZO_DST_UUID']
-    #     video_enabled = event['WAZO_VIDEO_ENABLED'] == '1'
-    #     ring_timeout = event['WAZO_RING_TIME']
-    #     tenant_uuid = event.get('ChanVariable', {}).get('WAZO_TENANT_UUID')
-    #     timestamp = event['WAZO_TIMESTAMP']
+        logger.info('message in emergency check chat room')
 
-    #     logger.info(
-    #         'Received push notification request for user %s from %s <%s>',
-    #         user_uuid,
-    #         event["CallerIDName"],
-    #         event["CallerIDNum"],
-    #     )
+        emergency_check: EmergencyCheckState = next(
+            emergency_check
+            for emergency_check in self._service.emergencies.values()
+            if emergency_check.tenant_uuid == event['tenant_uuid']
+            and emergency_check.chat_room == event['room']['uuid']
+        )
 
-    #     self._service.send_push_notification(
-    #         tenant_uuid,
-    #         user_uuid,
-    #         event["Uniqueid"],
-    #         event['ChanVariable']['WAZO_SIP_CALL_ID'],
-    #         event["CallerIDName"],
-    #         event["CallerIDNum"],
-    #         video_enabled,
-    #         ring_timeout,
-    #         event["Linkedid"],
-    #         timestamp,
-    #     )
+        if emergency_check.status == 'concluded':
+            return
+        
+        if event['user_uuid'] == self._service._system_users[event['tenant_uuid']]['uuid']:
+            return
+        
+        if event['user_uuid'] in emergency_check.targeted_users:
+            message_content = event['content']
+            emergency_check.targeted_users[event['user_uuid']] = 'reached'
+            if SAFE_CHAT_RESPONSE.match(message_content):
+                emergency_check.targeted_users[event['user_uuid']] = 'safe'
+            elif UNSAFE_CHAT_RESPONSE.match(message_content):
+                emergency_check.targeted_users[event['user_uuid']] = 'unsafe'
+        
+        logger.info('message from non-targeted user %s', event['user_uuid'])
 
-    # def _on_refresh_token_created(self, event):
-    #     if not event['mobile']:
-    #         return
-
-    #     self._service.on_mobile_refresh_token_created(event['user_uuid'])
-
-    # def _on_refresh_token_deleted(self, event):
-    #     if not event['mobile']:
-    #         return
-
-    #     self._service.on_mobile_refresh_token_deleted(event['user_uuid'])
-
-    # def _on_bridge_enter(self, event):
-    #     if not event['BridgeUniqueid'].startswith('wazo-dial-mobile-'):
-    #         return
-
-    #     protocol, endpoint = protocol_interface_from_channel(event['Channel'])
-    #     if protocol.lower() != 'sip':
-    #         return
-
-    #     linkedid = event['Linkedid']
-    #     user_uuid = event['ChanVariable']['WAZO_USERUUID']
-
-    #     try:
-    #         has_a_registered_mobile_and_pending_push = (
-    #             self._service.has_a_registered_mobile_and_pending_push(
-    #                 linkedid,
-    #                 event['Uniqueid'],
-    #                 endpoint,
-    #                 user_uuid,
-    #             )
-    #         )
-    #     except ARINotFound:
-    #         # The channel that entered the bridge has already been hung up
-    #         return self._service.cancel_push_mobile(linkedid)
-
-    #     if has_a_registered_mobile_and_pending_push:
-    #         self._service.remove_pending_push_mobile(linkedid)
-    #     else:
-    #         self._service.cancel_push_mobile(linkedid)
-
-    # def _on_dial_end(self, event):
-    #     # Ignore dial_end if it's in an unrelated context
-    #     if event['DestContext'] != 'wazo_wait_for_registration':
-    #         return
-
-    #     # Ignore dial_end if the call was answered, those are handled in _on_bridge_enter
-    #     if event['DialStatus'] == 'ANSWER':
-    #         return
-
-    #     self._service.cancel_push_mobile(event['Uniqueid'])
+        if all(user_state in {'safe'} for user_state in emergency_check.targeted_users.values()):
+            emergency_check.status = 'concluded'

@@ -31,7 +31,7 @@ def handle_pdb(sig, frame):
 
 EMERGENCIES = {}
 THREADPOOL = ThreadPoolExecutor(thread_name_prefix='emergency_check_worker.')
-
+SYSTEM_USERS = {}
 
 class EmergencyCheckPlugin:
     def __init__(self):
@@ -81,10 +81,11 @@ class EmergencyCheckPlugin:
                                 'Wazo-Tenant': tenant['uuid']
                             }
                         )
+                        auth_client.users.delete(user['uuid'])
                 if tenant['slug'] != 'master':
                     logger.info('Creating emergency-check user in tenant %s', tenant['uuid'])
                     try:
-                        confd_client.users.create(
+                        user = confd_client.users.create(
                             {
                                 'firstname': 'emergency-check',
                                 'lastname': '',
@@ -100,6 +101,9 @@ class EmergencyCheckPlugin:
                     except requests.exceptions.HTTPError:
                         logger.exception('Failed to create emergency-check user in tenant %s', tenant['uuid'])
                         continue
+                    else:
+                        SYSTEM_USERS[tenant['uuid']] = user
+
             logger.info('Done creating emergency-check users in each tenant')
 
         next_token_changed_subscribe(create_tenant_users)
@@ -110,7 +114,8 @@ class EmergencyCheckPlugin:
         notifier = EmergencyCheckNotifier(bus_publisher)
         service = EmergencyCheckService(
             self.threadpool, self.emergencies, ari, notifier, amid_client, 
-            auth_client, confd_client, chatd_client
+            auth_client, confd_client, chatd_client,
+            system_users=SYSTEM_USERS
         )
         event_handler = EventHandler(service)
 

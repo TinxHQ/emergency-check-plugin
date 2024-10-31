@@ -54,7 +54,7 @@ def _future_handler(future):
 class EmergencyCheckService:
     def __init__(self, threadpool, emergencies: dict[str, EmergencyCheckState],
             ari, notifier: EmergencyCheckNotifier, amid_client, auth_client: AuthClient, 
-            confd_client: ConfdClient, chatd_client: ChatdClient):
+            confd_client: ConfdClient, chatd_client: ChatdClient, system_users: dict[str, dict]):
         self._ari = ari.client
         self._auth_client = auth_client
         self._amid_client = amid_client
@@ -64,11 +64,12 @@ class EmergencyCheckService:
         self._emergencies = emergencies
         self._threadpool = threadpool
         self._pending_emergency_check_futures = []
+        self._system_users = system_users
 
     def create_emergency_check(
         self, emergency_type: EmergencyType, user_uuid: str, tenant_uuid: str,
         targeted_users: list[str] | None = None
-        ) -> str:
+    ) -> str:
         emergency_id = str(uuid.uuid4())
 
         if not targeted_users:
@@ -158,6 +159,7 @@ class EmergencyCheckService:
                 {"uuid": user_uuid}
             ]
         })
+        emergency_check.chat_room = room['uuid']
         self._chatd_client.rooms.create_message_from_user(room['uuid'], {
             'content': EMERGENCY_MESSAGE_TEMPLATES[emergency_check.emergency_type].format(
 

@@ -18,3 +18,4 @@ class EmergencyCheckState:
     emergency_type: str
     uuid: str
     tenant_uuid: str
+    chat_room: str | None = None
