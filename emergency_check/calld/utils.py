@@ -1,9 +1,9 @@
 # Copyright 2024 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
+from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass,field
 from typing import Literal
-
 
 UserState = Literal['pending', 'reached', 'safe', 'unsafe']
 EmergencyType = Literal['fire', 'earthquake', 'violence', 'storm']
@@ -19,3 +19,4 @@ class EmergencyCheckState:
     uuid: str
     tenant_uuid: str
     chat_room: str | None = None
+    futures = field(default_factory=list)

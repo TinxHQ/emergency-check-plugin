@@ -63,7 +63,6 @@ class EmergencyCheckService:
         self._notifier = notifier
         self._emergencies = emergencies
         self._threadpool = threadpool
-        self._pending_emergency_check_futures = []
         self._system_users = system_users
 
     def create_emergency_check(
@@ -89,7 +88,7 @@ class EmergencyCheckService:
         )
         _future = self._threadpool.submit(self._trigger_emergency_check, emergency_state)
         _future.add_done_callback(_future_handler)
-        self._pending_emergency_check_futures.append(
+        self._emergencies[emergency_id].futures.append(
             _future
         )
         return emergency_id
