@@ -11,7 +11,7 @@ const CreateView = () => {
 
     const response = await Emergency.create();
 
-    navigate(`/alerts/${response.uuid}`)
+    navigate(`/alerts/${response.emergency_id}`)
   }
 
   return (
