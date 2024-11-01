@@ -3,7 +3,7 @@ import { AlertUser, EnhanceAlert } from '../types';
 
 const initialState: any = { }
 
-const filterCurrentUser = (users, currentUserUUID) => {
+const filterCurrentUser = (users: Partial<AlertUser>[], currentUserUUID: string) => {
   return users.filter(user => user.uuid !== currentUserUUID)
 }
 

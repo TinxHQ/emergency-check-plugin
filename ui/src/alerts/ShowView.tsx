@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import type { AlertUser, EnhanceAlert } from '../types/index'
 import Grid from '@mui/material/Grid2';
@@ -96,6 +96,11 @@ const ShowView = () => {
 
   useEffect(() => {
     (async ( ) => {
+     if (!routeParams.uuid) {
+      // Handle the case where uuid is undefined, such as redirecting to an error page.
+      return;
+    }
+
       const response = await Emergency.get(routeParams.uuid);
       dispatch(initAlert(response))
     })()

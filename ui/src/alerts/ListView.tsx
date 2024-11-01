@@ -49,7 +49,7 @@ const ListView = () => {
             <TableCell>{row?.pending_users?.length || 0}</TableCell>
             <TableCell>{row?.not_safe_users?.length || 0}</TableCell>
             <TableCell>{row?.safe_users?.length || 0}</TableCell>
-            <TableCell><IconButton LinkComponent={Link} to={`/alerts/${row.uuid}`}><EditIcon /></IconButton></TableCell>
+            <TableCell><IconButton component={Link} to={`/alerts/${row.uuid}`}><EditIcon /></IconButton></TableCell>
           </TableRow>
         ))}
       </TableBody>

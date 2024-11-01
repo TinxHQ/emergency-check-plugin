@@ -14,7 +14,7 @@ wazoApp.onPluginUnLoaded = () => {
 
 (async () => {
   await wazoApp.initialize();
-  const context = wazoApp.getContext();
+  const context: any = wazoApp.getContext();
 
   const authInfo = {
     host: context.app.extra.stack.host,

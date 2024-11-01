@@ -31,9 +31,9 @@ export const initWazoSocket = ({ host, token }: InitOpts) => {
 
   ws.connect();
 
-  ws.on('*', (args) => {
+  ws.on('*', (/* args */) => {
     // @todo
-    store.dispatch();
+    // store.dispatch();
   });
   return ws;
 }

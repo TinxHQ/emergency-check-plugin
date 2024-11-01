@@ -1,69 +1,15 @@
-import { memo, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import type { AlertUser, EnhanceAlert } from '../types/index'
-import Grid from '@mui/material/Grid2';
-import { Avatar, Button, Card, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
-import { green, grey, red } from '@mui/material/colors';
-import styled from '@emotion/styled'
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import DangerousIcon from '@mui/icons-material/Dangerous';
-import CheckIcon from '@mui/icons-material/Check';
-import { useDispatch, useSelector } from 'react-redux';
-import { alertNotSafe, alertSafe, alertWaiting, initAlert } from '../store/alertSlice';
+import { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {  Button, Card } from '@mui/material';
 import * as Emergency  from '../models/Emergency';
-
-const CardColored = styled(Card)(`
-  font-size: 30px;
-  text-align: center;
-  padding: 40px 20px;
-  font-weight: bold;
-`)
-
-const ListTitle = styled((props: Record<string, any>) => <Typography {...props} variant="h2" />)(`
-  font-size: 1rem;
-  margin-bottom: 5px;
-`);
-
-const WAITING = 'waiting';
-const NOT_SAFE = 'not_safe';
-const SAFE = 'safe';
-
-type Props = {
-  title: string;
-  severity: typeof WAITING | typeof NOT_SAFE | typeof SAFE;
-  users: AlertUser[];
-}
-
-const getColor = (severity: Props['severity']) => {
-  switch (severity) {
-    case WAITING:
-      return grey[200];
-    case NOT_SAFE:
-      return red[200];
-    case SAFE:
-      return green[200];
-  }
-}
-
-const getIcon = (severity: Props['severity']) => {
-  switch (severity) {
-    case WAITING:
-      return AccessTimeIcon;
-    case NOT_SAFE:
-      return DangerousIcon;
-    case SAFE:
-      return CheckIcon;
-  }
-}
 
 const CreateView = () => {
   const navigate = useNavigate();
 
-  const handleClick = async (e) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
 
     const response = await Emergency.create();
-    console.log(`🤠 -> handleClick -> response:`, response);
 
     navigate(`/alerts/${response.uuid}`)
   }

@@ -17,5 +17,5 @@ export const enhanceAlert = (alert: Alert): EnhanceAlert => {
   return {
     ...alert,
     ...usersByStatus
-  }
+  } as EnhanceAlert
 }
