@@ -1,6 +1,11 @@
-version: '3'
 services:
   web:
-    build: .
+    build:
+      context: .
     ports:
       - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
