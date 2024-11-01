@@ -4,6 +4,7 @@ import routes from './routes'
 import { closeWazoSocket, initWazoRequester, initWazoSocket } from './wazo';
 import { Provider } from 'react-redux';
 import store from './store';
+import devMode from './devMode';
 
 const router = createBrowserRouter(routes);
 const wazoApp = new AppPlugin();
@@ -15,6 +16,9 @@ wazoApp.onPluginUnLoaded = () => {
 (async () => {
   await wazoApp.initialize();
   const context: any = wazoApp.getContext();
+
+  // @todo move to sdk
+  devMode();
 
   const authInfo = {
     host: context.app.extra.stack.host,
