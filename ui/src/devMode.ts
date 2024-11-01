@@ -4,6 +4,7 @@ const addToolbar = () => {
 
   // @todo add icons
   // @todo add HOME icon => reload to plugin home page
+  // @todo add URL listener
   div.innerHTML = `
     <div class="plugin-toolbar-content">
       <button class="plugin-reload">Reload</button>

@@ -11,6 +11,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useDispatch, useSelector } from 'react-redux';
 import { alertNotSafe, alertSafe, alertWaiting, initAlert } from '../store/alertSlice';
 import * as Emergency  from '../models/Emergency';
+import { enhanceAlert } from './services';
 
 const CardColored = styled(Card)(`
   font-size: 30px;
@@ -78,7 +79,7 @@ const UsersList = ({ title, severity, users }: Props) => {
                     <Icon />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText>{ [firstname, lastname].filter(Boolean).join(' ') }</ListItemText>
+                <ListItemText>{ [uuid, firstname, lastname].filter(Boolean).join(' ') }</ListItemText>
               </ListItem>
               <Divider />
             </div>
@@ -102,7 +103,7 @@ const ShowView = () => {
     }
 
       const response = await Emergency.get(routeParams.uuid);
-      dispatch(initAlert(response))
+      dispatch(initAlert(enhanceAlert(response)))
     })()
   }, [])
 
