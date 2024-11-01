@@ -46,6 +46,7 @@ const addInlineStyles = () => {
       padding: 10px;
       box-sizing: border-box;
       color: #FFF;
+      z-index: 9999;
     }
 
     .plugin-toolbar.close {
