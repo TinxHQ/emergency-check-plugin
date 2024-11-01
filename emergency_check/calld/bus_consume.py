@@ -51,11 +51,13 @@ class EventHandler:
             logger.info("User %s responded", event["user_uuid"])
             emergency_check.targeted_users[event["user_uuid"]] = "reached"
             if SAFE_CHAT_RESPONSE.match(message_content):
-                logger.info("User %s confirmed safe", event["user_uuid"])
-                emergency_check.targeted_users[event["user_uuid"]] = "safe"
+                self._service.update_user_status(
+                    emergency_check.uuid, event["user_uuid"], "safe"
+                )
             elif UNSAFE_CHAT_RESPONSE.match(message_content):
-                emergency_check.targeted_users[event["user_uuid"]] = "unsafe"
-                logger.info("User %s confirmed unsafe", event["user_uuid"])
+                self._service.update_user_status(
+                    emergency_check.uuid, event["user_uuid"], "unsafe"
+                )
         else:
             logger.info("message from non-targeted user %s", event["user_uuid"])
 
@@ -63,5 +65,4 @@ class EventHandler:
             user_state in {"safe"}
             for user_state in emergency_check.targeted_users.values()
         ):
-            logger.info("All users confirmed safe, emergency check concluded")
-            emergency_check.status = "concluded"
+            self._service.conclude_emergency_check(emergency_check.uuid)

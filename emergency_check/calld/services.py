@@ -15,7 +15,7 @@ from wazo_chatd_client.client import ChatdClient
 from wazo_confd_client.client import ConfdClient
 
 from .notifier import EmergencyCheckNotifier
-from .utils import EmergencyCheckState, EmergencyType
+from .utils import EmergencyCheckState, EmergencyType, UserState
 
 logger = logging.getLogger(__name__)
 
@@ -184,3 +184,36 @@ class EmergencyCheckService:
                 "alias": "emergency check service",
             },
         )
+
+    def conclude_emergency_check(self, emergency_id: str):
+        logger.info("emergency check concluded")
+        emergency_check = self._emergencies[emergency_id]
+        emergency_check.status = "concluded"
+        self._notifier.notify_emergency_check_concluded(emergency_check)
+
+    def update_user_status(self, emergency_id: str, user_uuid: str, status: UserState):
+        emergency_check = self._emergencies[emergency_id]
+        emergency_check.targeted_users[user_uuid] = status
+        if status == "safe":
+            logger.info("User %s confirmed safe", user_uuid)
+            self._notifier.notify_user_confirmed_safe(
+                tenant_uuid=emergency_check.tenant_uuid,
+                user_uuid=user_uuid,
+                emergency_check_id=emergency_id,
+            )
+        elif status == "reached":
+            logger.info("User %s reached", user_uuid)
+            self._notifier.notify_user_reached(
+                tenant_uuid=emergency_check.tenant_uuid,
+                user_uuid=user_uuid,
+                emergency_check_id=emergency_id,
+            )
+        elif status == "unsafe":
+            logger.info("User %s confirmed unsafe", user_uuid)
+            self._notifier.notify_user_confirmed_unsafe(
+                tenant_uuid=emergency_check.tenant_uuid,
+                user_uuid=user_uuid,
+                emergency_check_id=emergency_id,
+            )
+        else:
+            logger.error("Unknown user state %s", status)

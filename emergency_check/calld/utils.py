@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from concurrent.futures import Future
-from dataclasses import InitVar, dataclass, field
+from dataclasses import InitVar, dataclass
 from typing import Literal
 
 UserState = Literal["pending", "reached", "safe", "unsafe"]
