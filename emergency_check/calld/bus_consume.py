@@ -7,7 +7,6 @@ import re
 from wazo_calld.bus import CoreBusConsumer
 
 from .services import EmergencyCheckService
-from .utils import EmergencyCheckState
 
 logger = logging.getLogger(__name__)
 
