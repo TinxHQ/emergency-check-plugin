@@ -1,2 +1,8 @@
+chatd:
+  host: localhost
+  port: 9304
+  prefix: null
+  https: false
+
 enabled_plugins:
   emergency_check: true
