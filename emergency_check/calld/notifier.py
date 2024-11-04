@@ -16,6 +16,7 @@ class UserReachedEvent(UserEvent):
         super().__init__(
             {
                 "emergency_check_id": str(emergency_check_id),
+                "user_uuid": str(user_uuid),
             },
             tenant_uuid,
             user_uuid,
@@ -30,6 +31,7 @@ class UserConfirmedSafetyEvent(UserEvent):
         super().__init__(
             {
                 "emergency_check_id": str(emergency_check_id),
+                "user_uuid": str(user_uuid),
             },
             tenant_uuid,
             user_uuid,
@@ -44,6 +46,7 @@ class UserConfirmedUnsafeEvent(UserEvent):
         super().__init__(
             {
                 "emergency_check_id": str(emergency_check_id),
+                "user_uuid": str(user_uuid),
             },
             tenant_uuid,
             user_uuid,
