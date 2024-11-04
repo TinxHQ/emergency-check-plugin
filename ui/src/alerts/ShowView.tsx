@@ -2,16 +2,17 @@ import { memo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import type { AlertUser, EnhanceAlert } from '../types/index'
 import Grid from '@mui/material/Grid2';
-import { Avatar, Button, Card, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
+import { Avatar, Card, Divider, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import { green, grey, red } from '@mui/material/colors';
 import styled from '@emotion/styled'
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import CheckIcon from '@mui/icons-material/Check';
 import { useDispatch, useSelector } from 'react-redux';
-import { alertNotSafe, alertSafe, alertWaiting, initAlert } from '../store/alertSlice';
+import { initAlert } from '../store/alertSlice';
 import * as Emergency  from '../models/Emergency';
 import { enhanceAlert } from './services';
+import { STATUS_PENDING, STATUS_SAFE, STATUS_UNSAFE } from './contants';
 
 const CardColored = styled(Card)(`
   font-size: 30px;
@@ -25,34 +26,30 @@ const ListTitle = styled((props: Record<string, any>) => <Typography {...props} 
   margin-bottom: 5px;
 `);
 
-const WAITING = 'waiting';
-const NOT_SAFE = 'not_safe';
-const SAFE = 'safe';
-
 type Props = {
   title: string;
-  severity: typeof WAITING | typeof NOT_SAFE | typeof SAFE;
+  severity: typeof STATUS_PENDING | typeof STATUS_UNSAFE | typeof STATUS_SAFE;
   users: AlertUser[];
 }
 
 const getColor = (severity: Props['severity']) => {
   switch (severity) {
-    case WAITING:
+    case STATUS_PENDING:
       return grey[200];
-    case NOT_SAFE:
+    case STATUS_UNSAFE:
       return red[200];
-    case SAFE:
+    case STATUS_SAFE:
       return green[200];
   }
 }
 
 const getIcon = (severity: Props['severity']) => {
   switch (severity) {
-    case WAITING:
+    case STATUS_PENDING:
       return AccessTimeIcon;
-    case NOT_SAFE:
+    case STATUS_UNSAFE:
       return DangerousIcon;
-    case SAFE:
+    case STATUS_SAFE:
       return CheckIcon;
   }
 }
@@ -109,21 +106,17 @@ const ShowView = () => {
 
   return (
     <div>
-      <Button onClick={() => dispatch(alertWaiting(alert.pending_users[0]))}>Move waiting</Button>
-      <Button onClick={() => dispatch(alertNotSafe(alert.pending_users[0]))}>Move not safe</Button>
-      <Button onClick={() => dispatch(alertSafe(alert.pending_users[0]))}>Move safe</Button>
-
       <Grid container spacing={2}>
         <Grid size={4}>
-          <UsersList severity={WAITING} title="In progress" users={alert.pending_users} />
+          <UsersList severity={STATUS_PENDING} title="In progress" users={alert.pending_users} />
         </Grid>
 
         <Grid size={4}>
-          <UsersList severity={NOT_SAFE} title="Not Safe" users={alert.not_safe_users} />
+          <UsersList severity={STATUS_UNSAFE} title="Not Safe" users={alert.unsafe_users} />
         </Grid>
 
         <Grid size={4}>
-          <UsersList severity={SAFE} title="Not Safe" users={alert.safe_users} />
+          <UsersList severity={STATUS_SAFE} title="Safe" users={alert.safe_users} />
         </Grid>
       </Grid>
     </div>

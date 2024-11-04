@@ -47,7 +47,7 @@ const ListView = () => {
             <TableCell>{ row.emergency_type === 'fire' && '🔥 '}{ row.emergency_type }</TableCell>
             <TableCell>{row.originator}</TableCell>
             <TableCell>{row?.pending_users?.length || 0}</TableCell>
-            <TableCell>{row?.not_safe_users?.length || 0}</TableCell>
+            <TableCell>{row?.unsafe_users?.length || 0}</TableCell>
             <TableCell>{row?.safe_users?.length || 0}</TableCell>
             <TableCell><IconButton component={Link} to={`/alerts/${row.uuid}`}><EditIcon /></IconButton></TableCell>
           </TableRow>

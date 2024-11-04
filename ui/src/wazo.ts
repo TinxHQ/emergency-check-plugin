@@ -3,6 +3,8 @@ import {
   WebSocketClient,
   type WebSocketClient as WazoWebSocketClient,
 } from '@wazo/sdk';
+import store from './store';
+import { alertNotSafe, alertSafe } from './store/alertSlice';
 
 let ws: WazoWebSocketClient;
 let requester: typeof ApiRequester;
@@ -31,10 +33,21 @@ export const initWazoSocket = ({ host, token }: InitOpts) => {
 
   ws.connect();
 
-  ws.on('*', (/* args */) => {
-    // @todo
-    // store.dispatch();
+  // Plugin events
+  // emergency_check_user_confirmed_safe
+  // emergency_check_user_reached
+  // emergency_check_user_confirmed_unsafe
+  // emergency_check_initiated
+  // emergency_check_concluded
+
+  ws.on('emergency_check_user_confirmed_safe', (args: Record<string, any>) => {
+    store.dispatch(alertSafe({ uuid: args.data.user_uuid }))
   });
+
+  ws.on('emergency_check_user_confirmed_unsafe', (args: Record<string, any>) => {
+    store.dispatch(alertNotSafe({ uuid: args.data.user_uuid }))
+  });
+
   return ws;
 }
 

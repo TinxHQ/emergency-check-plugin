@@ -17,24 +17,24 @@ export const alertSlice = createSlice({
         ...action.payload,
       }
     },
-    alertWaiting: (state, action: PayloadAction<AlertUser>) => {
-      state.missing = [action.payload, ...filterCurrentUser([...state.missing], action.payload.uuid)];
-      state.not_safe = filterCurrentUser([...state.not_safe], action.payload.uuid)
-      state.safe = filterCurrentUser([...state.safe], action.payload.uuid)
+    alertPending: (state, action: PayloadAction<AlertUser>) => {
+      state.pending_users = [action.payload, ...filterCurrentUser([...(state.pending_users || [])], action.payload.uuid)];
+      state.unsafe_users = filterCurrentUser([...(state.unsafe_users || [])], action.payload.uuid)
+      state.safe_users = filterCurrentUser([...(state.safe_users || [])], action.payload.uuid)
     },
     alertNotSafe: (state, action: PayloadAction<AlertUser>) => {
-      state.missing = filterCurrentUser([...state.missing], action.payload.uuid);
-      state.not_safe = [action.payload, ...filterCurrentUser([...state.not_safe], action.payload.uuid)]
-      state.safe = filterCurrentUser([...state.safe], action.payload.uuid)
+      state.pending_users = filterCurrentUser([...(state.pending_users || [])], action.payload.uuid);
+      state.unsafe_users = [action.payload, ...filterCurrentUser([...state.unsafe_users], action.payload.uuid)]
+      state.safe_users = filterCurrentUser([...state.safe_users], action.payload.uuid)
     },
     alertSafe: (state, action: PayloadAction<AlertUser>) => {
-      state.missing = filterCurrentUser([...state.missing], action.payload.uuid);
-      state.not_safe = filterCurrentUser([...state.not_safe], action.payload.uuid)
-      state.safe = [action.payload, ...filterCurrentUser([...state.safe], action.payload.uuid)]
+      state.pending_users = filterCurrentUser([...(state.pending_users || [])], action.payload.uuid);
+      state.unsafe_users = filterCurrentUser([...(state.unsafe_users || [])], action.payload.uuid)
+      state.safe_users = [action.payload, ...filterCurrentUser([...(state.safe_users || [])], action.payload.uuid)]
     },
   },
 })
 
-export const { initAlert, alertWaiting, alertNotSafe, alertSafe } = alertSlice.actions
+export const { initAlert, alertPending, alertNotSafe, alertSafe } = alertSlice.actions
 
 export default alertSlice.reducer

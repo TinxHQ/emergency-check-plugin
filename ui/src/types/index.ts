@@ -13,5 +13,5 @@ export type Alert = {
 export type EnhanceAlert = Alert & {
   pending_users: AlertUser[];
   safe_users: AlertUser[];
-  not_safe_users: AlertUser[];
+  unsafe_users: AlertUser[];
 }
