@@ -174,7 +174,7 @@ class EmergencyCheckService:
                 "users": [{"uuid": user_uuid}],
             }
         )
-        emergency_check.chat_room = room["uuid"]
+        emergency_check.chat_rooms[room["uuid"]] = user_uuid
         self._chatd_client.rooms.create_message_from_user(
             room["uuid"],
             {

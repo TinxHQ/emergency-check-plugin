@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from concurrent.futures import Future
-from dataclasses import InitVar, dataclass
+from dataclasses import InitVar, dataclass, field
 from typing import Literal
 
 UserState = Literal["pending", "reached", "safe", "unsafe"]
@@ -21,7 +21,7 @@ class EmergencyCheckState:
     emergency_type: str
     uuid: str
     tenant_uuid: str
-    chat_room: str | None = None
+    chat_rooms: dict[str, str] = field(default_factory=dict)
     _futures: InitVar[list[Future] | None] = None
 
     def __post_init__(self, *args):

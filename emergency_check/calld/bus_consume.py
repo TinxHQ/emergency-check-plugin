@@ -31,7 +31,7 @@ class EventHandler:
                 emergency_check
                 for emergency_check in self._service._emergencies.values()
                 if emergency_check.tenant_uuid == event["tenant_uuid"]
-                and emergency_check.chat_room == event["room"]["uuid"]
+                and event["room"]["uuid"] in emergency_check.chat_rooms
             )
         except StopIteration:
             logger.debug(
