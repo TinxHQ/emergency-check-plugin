@@ -26,7 +26,6 @@ class EventHandler:
         # NOTE: documentation lies, there is no room.name in event
         # if "EMERGENCY CHECK" not in event['room']['name']:
         #     return
-        logger.info("message in emergency check chat room")
         try:
             emergency_check: EmergencyCheckState = next(
                 emergency_check
@@ -35,20 +34,35 @@ class EventHandler:
                 and emergency_check.chat_room == event["room"]["uuid"]
             )
         except StopIteration:
+            logger.debug(
+                "no matching emergency check found for tenant(uuid=%s) and room(uuid=%s)",
+                event["tenant_uuid"],
+                event["room"]["uuid"],
+            )
             return
 
+        logger.info(
+            "chat message in emergency check chat room (emergency_check.uuid=%s) (room.uuid=%s)",
+            emergency_check.uuid,
+            event["room"]["uuid"],
+        )
         if emergency_check.status == "concluded":
+            logger.debug("emergency check %s already concluded", emergency_check.uuid)
             return
 
         if (
             event["user_uuid"]
             == self._service._system_users[event["tenant_uuid"]]["uuid"]
         ):
+            logger.debug(
+                "ignoring message from emergency check system user %s",
+                event["user_uuid"],
+            )
             return
 
         if event["user_uuid"] in emergency_check.targeted_users:
             message_content = event["content"]
-            logger.info("User %s responded", event["user_uuid"])
+            logger.info("User %s responded to emergency check", event["user_uuid"])
             emergency_check.targeted_users[event["user_uuid"]] = "reached"
             if SAFE_CHAT_RESPONSE.match(message_content):
                 self._service.update_user_status(
@@ -65,4 +79,8 @@ class EventHandler:
             user_state in {"safe"}
             for user_state in emergency_check.targeted_users.values()
         ):
+            logger.info(
+                "All users confirmed safe, concluding emergency check %s",
+                emergency_check.uuid,
+            )
             self._service.conclude_emergency_check(emergency_check.uuid)
